@@ -23,7 +23,7 @@
                         <button type="submit" class="btn btn-primary">Log In</button>
                     </div>
                     <div class="col-sm-6 text-center">
-                        <a href="" class="btn btn-primary">Register</a>
+                        <a href="register.php" class="btn btn-primary">Register</a>
                     </div>
                 </div>
             </form>
