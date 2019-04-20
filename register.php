@@ -8,7 +8,7 @@
             <a href="" class="btn btn-primary">User Only</a>
             <br />
             <br />
-            <a href="" class="btn btn-primary">Visitor Only</a>
+            <a href="registervisitor.php" class="btn btn-primary">Visitor Only</a>
             <br />
             <br />
             <a href="" class="btn btn-primary">Employee Only</a>
