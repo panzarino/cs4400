@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-lg-8 offset-lg-2 text-center">
             <h1 class="mt-5">Register Visitor</h1>
-            <form onsubmit="return verify()">
+            <form onsubmit="return verify()" action="registervisitorscript.php" method="POST">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
@@ -77,6 +77,17 @@
                     </div>
                 </div>
             </form>
+            <?php
+            if (isset($_GET['username'])) {
+                echo '<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">That username is already in use.</div>';
+            }
+            if (isset($_GET['email'])) {
+                echo '<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">The following emails are already in use: '.htmlspecialchars($_GET['email']).'.</div>';
+            }
+            if (isset($_GET['success'])) {
+                echo '<div class="alert alert-success text-center" role="alert" style="margin-top: 30px">Your account has been created. It is pending admin approval before you can log in.</div>';
+            }
+            ?>
             <div id="errorMessage"></div>
         </div>
     </div>
@@ -114,11 +125,11 @@
             return false;
         }
         if ($('#password').val().length < 8) {
-            $('#errorMessage').html('<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Password must be at least 8 characters!</div>');
+            $('#errorMessage').html('<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Password must be at least 8 characters.</div>');
             return false;
         }
         if ($('#password').val() !== $('#confirmPassword').val()) {
-            $('#errorMessage').html('<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Passwords do not match!</div>');
+            $('#errorMessage').html('<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Passwords do not match.</div>');
             return false;
         }
         return true;

@@ -1,0 +1,5 @@
+# database server variables
+SetEnv DB_SERVERNAME 127.0.0.1
+SetEnv DB_USERNAME root
+SetEnv DB_PASSWORD password
+SetEnv DB_DATABASE 4400
