@@ -52,7 +52,7 @@ CREATE TABLE `Manager` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `Site` (
-  `SiteName` varchar(20) NOT NULL,
+  `SiteName` varchar(40) NOT NULL,
   `SiteAddress` varchar(40) DEFAULT NULL,
   `SiteZipcode` varchar(5) NOT NULL,
   `OpenEveryday` tinyint(1) NOT NULL,
