@@ -16,7 +16,7 @@ CREATE TABLE `Administrator` (
 CREATE TABLE `AssignTo` (
   `StaffUsername` varchar(20) NOT NULL,
   `EventName` varchar(20) NOT NULL,
-  `StartDate` datetime NOT NULL,
+  `StartDate` date NOT NULL,
   `SiteName` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -38,9 +38,9 @@ CREATE TABLE `Employee` (
 
 CREATE TABLE `Event` (
   `EventName` varchar(20) NOT NULL,
-  `StartDate` datetime NOT NULL,
+  `StartDate` date NOT NULL,
   `SiteName` varchar(20) NOT NULL,
-  `EndDate` datetime NOT NULL,
+  `EndDate` date NOT NULL,
   `EventPrice` double NOT NULL,
   `Capacity` int(11) NOT NULL,
   `Description` text NOT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE `TakeTransit` (
   `Username` varchar(20) NOT NULL,
   `TransitType` varchar(5) NOT NULL,
   `TransitRoute` varchar(20) NOT NULL,
-  `TransitDate` datetime NOT NULL
+  `TransitDate` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `Transit` (
@@ -93,8 +93,8 @@ CREATE TABLE `VisitEvent` (
   `VisitorUsername` varchar(20) NOT NULL,
   `EventName` varchar(20) NOT NULL,
   `SiteName` varchar(20) NOT NULL,
-  `StartDate` datetime NOT NULL,
-  `VisitEventDate` datetime NOT NULL
+  `StartDate` date NOT NULL,
+  `VisitEventDate` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `Visitor` (
@@ -104,7 +104,7 @@ CREATE TABLE `Visitor` (
 CREATE TABLE `VisitSite` (
   `VisitorUsername` varchar(20) NOT NULL,
   `SiteName` varchar(40) NOT NULL,
-  `VisitSiteDate` datetime NOT NULL
+  `VisitSiteDate` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -112,8 +112,8 @@ ALTER TABLE `Administrator`
   ADD PRIMARY KEY (`Username`);
 
 ALTER TABLE `AssignTo`
-  ADD KEY `StaffUsername` (`StaffUsername`),
-  ADD KEY `EventName` (`EventName`,`StartDate`,`SiteName`);
+  ADD KEY `EventName` (`EventName`,`StartDate`,`SiteName`),
+  ADD KEY `assignto_ibfk_1` (`StaffUsername`);
 
 ALTER TABLE `Connect`
   ADD KEY `SiteName` (`SiteName`),
@@ -124,7 +124,7 @@ ALTER TABLE `Employee`
 
 ALTER TABLE `Event`
   ADD PRIMARY KEY (`EventName`,`StartDate`,`SiteName`) USING BTREE,
-  ADD KEY `SiteName` (`SiteName`);
+  ADD KEY `event_ibfk_1` (`SiteName`);
 
 ALTER TABLE `Manager`
   ADD PRIMARY KEY (`Username`);
@@ -149,12 +149,12 @@ ALTER TABLE `User`
 
 ALTER TABLE `UserEmail`
   ADD PRIMARY KEY (`Email`) USING BTREE,
-  ADD KEY `Username` (`Username`);
+  ADD KEY `useremail_ibfk_1` (`Username`);
 
 ALTER TABLE `VisitEvent`
   ADD KEY `Username` (`VisitorUsername`),
   ADD KEY `VisitEventDate` (`VisitEventDate`),
-  ADD KEY `EventName_2` (`EventName`,`StartDate`,`SiteName`);
+  ADD KEY `EventName` (`EventName`,`StartDate`,`SiteName`);
 
 ALTER TABLE `Visitor`
   ADD PRIMARY KEY (`Username`);
@@ -166,47 +166,47 @@ ALTER TABLE `VisitSite`
 
 
 ALTER TABLE `Administrator`
-  ADD CONSTRAINT `administrator_1` FOREIGN KEY (`Username`) REFERENCES `Employee` (`Username`);
+  ADD CONSTRAINT `administrator_1` FOREIGN KEY (`Username`) REFERENCES `Employee` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `AssignTo`
-  ADD CONSTRAINT `assignto_ibfk_1` FOREIGN KEY (`StaffUsername`) REFERENCES `Staff` (`Username`),
-  ADD CONSTRAINT `assignto_ibfk_2` FOREIGN KEY (`EventName`,`StartDate`,`SiteName`) REFERENCES `Event` (`EventName`, `StartDate`, `SiteName`);
+  ADD CONSTRAINT `assignto_ibfk_1` FOREIGN KEY (`StaffUsername`) REFERENCES `Staff` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `assignto_ibfk_2` FOREIGN KEY (`EventName`,`StartDate`,`SiteName`) REFERENCES `Event` (`EventName`, `StartDate`, `SiteName`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `Connect`
   ADD CONSTRAINT `connect_1` FOREIGN KEY (`SiteName`) REFERENCES `Site` (`SiteName`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `connect_2` FOREIGN KEY (`TransitType`,`TransitRoute`) REFERENCES `Transit` (`TransitType`, `TransitRoute`);
+  ADD CONSTRAINT `connect_2` FOREIGN KEY (`TransitType`,`TransitRoute`) REFERENCES `Transit` (`TransitType`, `TransitRoute`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `Employee`
-  ADD CONSTRAINT `employee_1` FOREIGN KEY (`Username`) REFERENCES `User` (`Username`);
+  ADD CONSTRAINT `employee_1` FOREIGN KEY (`Username`) REFERENCES `User` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `Event`
-  ADD CONSTRAINT `event_ibfk_1` FOREIGN KEY (`SiteName`) REFERENCES `Site` (`SiteName`);
+  ADD CONSTRAINT `event_ibfk_1` FOREIGN KEY (`SiteName`) REFERENCES `Site` (`SiteName`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `Manager`
-  ADD CONSTRAINT `manager_1` FOREIGN KEY (`Username`) REFERENCES `Employee` (`Username`);
+  ADD CONSTRAINT `manager_1` FOREIGN KEY (`Username`) REFERENCES `Employee` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `Site`
-  ADD CONSTRAINT `site_1` FOREIGN KEY (`ManagerUsername`) REFERENCES `Manager` (`Username`);
+  ADD CONSTRAINT `site_1` FOREIGN KEY (`ManagerUsername`) REFERENCES `Manager` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `Staff`
-  ADD CONSTRAINT `staff_1` FOREIGN KEY (`Username`) REFERENCES `Employee` (`Username`);
+  ADD CONSTRAINT `staff_1` FOREIGN KEY (`Username`) REFERENCES `Employee` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `TakeTransit`
-  ADD CONSTRAINT `take_1` FOREIGN KEY (`Username`) REFERENCES `User` (`Username`),
-  ADD CONSTRAINT `take_2` FOREIGN KEY (`TransitType`,`TransitRoute`) REFERENCES `Transit` (`TransitType`, `TransitRoute`);
+  ADD CONSTRAINT `take_1` FOREIGN KEY (`Username`) REFERENCES `User` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `take_2` FOREIGN KEY (`TransitType`,`TransitRoute`) REFERENCES `Transit` (`TransitType`, `TransitRoute`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `UserEmail`
-  ADD CONSTRAINT `useremail_ibfk_1` FOREIGN KEY (`Username`) REFERENCES `User` (`Username`);
+  ADD CONSTRAINT `useremail_ibfk_1` FOREIGN KEY (`Username`) REFERENCES `User` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `VisitEvent`
-  ADD CONSTRAINT `visit_event_1` FOREIGN KEY (`VisitorUsername`) REFERENCES `Visitor` (`Username`),
-  ADD CONSTRAINT `visitevent_ibfk_1` FOREIGN KEY (`EventName`,`StartDate`,`SiteName`) REFERENCES `Event` (`EventName`, `StartDate`, `SiteName`);
+  ADD CONSTRAINT `visit_event_1` FOREIGN KEY (`VisitorUsername`) REFERENCES `Visitor` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `visitevent_ibfk_1` FOREIGN KEY (`EventName`,`StartDate`,`SiteName`) REFERENCES `Event` (`EventName`, `StartDate`, `SiteName`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `Visitor`
-  ADD CONSTRAINT `visitor_1` FOREIGN KEY (`Username`) REFERENCES `User` (`Username`);
+  ADD CONSTRAINT `visitor_1` FOREIGN KEY (`Username`) REFERENCES `User` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `VisitSite`
-  ADD CONSTRAINT `visit_site_1` FOREIGN KEY (`VisitorUsername`) REFERENCES `User` (`Username`),
+  ADD CONSTRAINT `visit_site_1` FOREIGN KEY (`VisitorUsername`) REFERENCES `User` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `visit_site_2` FOREIGN KEY (`SiteName`) REFERENCES `Site` (`SiteName`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 

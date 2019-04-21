@@ -148,7 +148,7 @@ mysqli_close($connection);
         }
 
         handleStaff();
-        
+
         if (staff.length < parseInt($('#minstaffreq').val())) {
             $('#errorMessage').html('<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Must have at least minimum staff required selected.</div>');
             return false;

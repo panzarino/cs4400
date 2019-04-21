@@ -63,7 +63,7 @@ mysqli_close($connection);
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Connected Sites</label>
                             <div class="col-sm-8">
-                                <select multiple id="sites">
+                                <select class="form-control" multiple id="sites">
                                     <?php
                                     foreach ($sites as $site) {
                                         echo '<option value="'.$site.'">'.$site.'</option>';
