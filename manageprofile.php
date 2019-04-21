@@ -47,6 +47,13 @@ while(mysqli_stmt_fetch($emailquery)) {
 }
 mysqli_stmt_close($emailquery);
 
+$visitorquery = mysqli_prepare($connection, "SELECT Username FROM Visitor WHERE Username=?");
+mysqli_stmt_bind_param($visitorquery, 's', $username);
+mysqli_stmt_execute($visitorquery);
+mysqli_stmt_bind_result($visitorquery, $visitor);
+mysqli_stmt_fetch($visitorquery);
+mysqli_stmt_close($visitorquery);
+
 ?>
 
 <?php include('header.php') ?>
@@ -121,13 +128,13 @@ mysqli_stmt_close($emailquery);
                     </div>
                 </div>
                 <div class="row">
+                    <label class="col-sm-3 col-form-label">Emails</label>
                     <div class="col-md-6 offset-md-2">
                         <div class="row" id="emailDisplay">
 
                         </div>
                         <br />
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Email</label>
                             <div class="col-sm-6">
                                 <input type="email" class="form-control" name="email" id="email" maxlength="60">
                             </div>
@@ -136,6 +143,16 @@ mysqli_stmt_close($emailquery);
                     </div>
                 </div>
                 <input type="hidden" id="emails" name="emails" value="">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="checkbox" id="visitorCheckbox" name="visitor" value="true">Visitor Account <br/>
+                        <script>
+                            if (<?= $visitor == $username ?>) {
+                                $("#visitorCheckbox").prop('checked', true);
+                            }
+                        </script>
+                    </div>
+                </div>
                 <div class="form-group row">
                     <div class="col-sm-6 text-center">
                         <a href="home.php" class="btn btn-primary">Back</a>
@@ -163,7 +180,6 @@ mysqli_stmt_close($emailquery);
 
 <script>
     var emails = [<?= $emails ?>];
-
     function renderEmails() {
         $('#emailDisplay').html('');
         var emailString = '';
@@ -202,7 +218,6 @@ mysqli_stmt_close($emailquery);
         }
         return true;
     }
-
     renderEmails();
 </script>
 
