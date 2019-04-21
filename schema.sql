@@ -30,10 +30,10 @@ CREATE TABLE `Employee` (
   `Username` varchar(20) NOT NULL,
   `Phone` varchar(10) NOT NULL,
   `EmployeeID` varchar(9) DEFAULT NULL,
-  `EmployeeAddress` varchar(40) DEFAULT NULL,
-  `EmployeeCity` varchar(20) DEFAULT NULL,
-  `EmployeeState` varchar(5) DEFAULT NULL,
-  `EmployeeZipcode` varchar(5) DEFAULT NULL
+  `EmployeeAddress` varchar(40) NOT NULL,
+  `EmployeeCity` varchar(20) NOT NULL,
+  `EmployeeState` varchar(5) NOT NULL,
+  `EmployeeZipcode` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `Event` (
