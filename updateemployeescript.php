@@ -6,6 +6,7 @@ $firstName = filter_input(INPUT_POST, 'firstName');
 $lastName = filter_input(INPUT_POST, 'lastName');
 $emails = explode(',', filter_input(INPUT_POST, 'emails'));
 $phone = filter_input(INPUT_POST, 'phone');
+$visitor = filter_input(INPUT_POST, 'visitor');
 $username = $_SESSION['username'];
 
 // Create connection
@@ -76,6 +77,28 @@ foreach ($emails as $email) {
     mysqli_stmt_execute($emailinserquery);
 }
 mysqli_stmt_close($emailinserquery);
+
+
+if ($visitor == 'true') {
+    $visitorquery = mysqli_prepare($connection, "SELECT Username FROM Visitor WHERE Username=?");
+    mysqli_stmt_bind_param($visitorquery, 's', $username);
+    mysqli_stmt_execute($visitorquery);
+    mysqli_stmt_bind_result($visitorquery, $visitorresult);
+    mysqli_stmt_fetch($visitorquery);
+    mysqli_stmt_close($visitorquery);
+
+    if (!isset($visitorresult)) {
+        $insertvisitorquery = mysqli_prepare($connection, "INSERT INTO Visitor (Username) VALUES (?)");
+        mysqli_stmt_bind_param($insertvisitorquery, 's', $username);
+        mysqli_stmt_execute($insertvisitorquery);
+        mysqli_stmt_close($insertvisitorquery);
+    }
+} else {
+    $deletevisitorquery = mysqli_prepare($connection, "DELETE FROM Visitor WHERE Username=?");
+    mysqli_stmt_bind_param($deletevisitorquery, 's', $username);
+    mysqli_stmt_execute($deletevisitorquery);
+    mysqli_stmt_close($deletevisitorquery);
+}
 
 // redirect
 mysqli_close($connection);
