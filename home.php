@@ -36,7 +36,7 @@ $type = $_SESSION['type'];
                     <br />
                 </div>
                 <div class="col-md-6 text-center">
-                    <a href="" class="btn btn-primary">View Transit History</a>
+                    <a href="viewtransithistory.php" class="btn btn-primary">View Transit History</a>
                     <br />
                     <br />
                 </div>
