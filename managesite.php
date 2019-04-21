@@ -102,7 +102,7 @@ mysqli_close($connection);
                     </div>
                 </div>
             </form>
-            <form method="POST" onsubmit="return verify()">
+            <form onsubmit="return verify()">
                 <div class="row">
                     <div class="col-md-12">
                         <table class="table">
@@ -118,8 +118,8 @@ mysqli_close($connection);
                             <?php
                             foreach ($sites as $s) {
                                 if (($site == 'all' || $site == null || $site == $s['name']) && ($manager == 'all' || $manager == null || $manager == $s['username']) && ($open == 'all' || $open == null || (($open == 'yes') == $s['open'])))
-                                echo '<tr><td><input type="radio" name="site" value="' . $s['name'] . '"></td><td>' . $s['name'] . '</td><td>' . $s['firstName'] . ' ' . $s['lastName'] . '</td><td>' . ($s['open'] ? 'Yes' : 'No') . '</td></tr>';
-                            }
+                                    echo '<tr><td><input type="radio" name="site" value="' . $s['name'] . '"></td><td>' . $s['name'] . '</td><td>' . $s['firstName'] . ' ' . $s['lastName'] . '</td><td>' . ($s['open'] ? 'Yes' : 'No') . '</td></tr>';
+                                }
                             ?>
                             </tbody>
                         </table>
@@ -133,10 +133,10 @@ mysqli_close($connection);
                         <a href="createsite.php" class="btn btn-primary">Create</a>
                     </div>
                     <div class="col-md-3 text-center">
-                        <a href="home.php" class="btn btn-primary">Edit</a>
+                        <button type="submit" class="btn btn-primary" formaction="editsite.php" formmethod="GET">Edit</button>
                     </div>
                     <div class="col-md-3 text-center">
-                        <button type="submit" class="btn btn-primary" formaction="deletesitescript.php">Delete</button>
+                        <button type="submit" class="btn btn-primary" formaction="deletesitescript.php" formmethod="POST">Delete</button>
                     </div>
                 </div>
             </form>
