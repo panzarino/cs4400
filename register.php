@@ -11,10 +11,10 @@
             <a href="registervisitor.php" class="btn btn-primary">Visitor Only</a>
             <br />
             <br />
-            <a href="" class="btn btn-primary">Employee Only</a>
+            <a href="registeremployee.php" class="btn btn-primary">Employee Only</a>
             <br />
             <br />
-            <a href="" class="btn btn-primary">Employee-Visitor</a>
+            <a href="registeremployeevisitor.php" class="btn btn-primary">Employee-Visitor</a>
             <br />
             <br />
             <a href="index.php" class="btn btn-primary">Back</a>
