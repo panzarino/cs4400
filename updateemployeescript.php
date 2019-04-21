@@ -87,17 +87,22 @@ if ($visitor == 'true') {
     mysqli_stmt_fetch($visitorquery);
     mysqli_stmt_close($visitorquery);
 
+    // add employee to visitor table if not already present
     if (!isset($visitorresult)) {
         $insertvisitorquery = mysqli_prepare($connection, "INSERT INTO Visitor (Username) VALUES (?)");
         mysqli_stmt_bind_param($insertvisitorquery, 's', $username);
         mysqli_stmt_execute($insertvisitorquery);
         mysqli_stmt_close($insertvisitorquery);
+        $_SESSION['type'] = $_SESSION['type'] . '-visitor';
     }
 } else {
     $deletevisitorquery = mysqli_prepare($connection, "DELETE FROM Visitor WHERE Username=?");
     mysqli_stmt_bind_param($deletevisitorquery, 's', $username);
     mysqli_stmt_execute($deletevisitorquery);
     mysqli_stmt_close($deletevisitorquery);
+    if ($_SESSION['type'] == 'administrator-visitor') $_SESSION['type'] = 'administrator';
+    if ($_SESSION['type'] == 'manager-visitor') $_SESSION['type'] = 'manager';
+    if ($_SESSION['type'] == 'staff-visitor') $_SESSION['type'] = 'staff';
 }
 
 // redirect
