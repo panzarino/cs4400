@@ -97,17 +97,18 @@ if (isset($visitorresult)) {
         $_SESSION['type'] = 'staff-visitor';
     }
     $_SESSION['type'] = 'visitor';
+} else {
+    if (isset($adminresult)) {
+        $_SESSION['type'] = 'administrator';
+    }
+    if (isset($managerresult)) {
+        $_SESSION['type'] = 'manager';
+    }
+    if (isset($staffresult)) {
+        $_SESSION['type'] = 'staff';
+    }
+    $_SESSION['type'] = 'user';
 }
-if (isset($adminresult)) {
-    $_SESSION['type'] = 'administrator';
-}
-if (isset($managerresult)) {
-    $_SESSION['type'] = 'manager';
-}
-if (isset($staffresult)) {
-    $_SESSION['type'] = 'staff';
-}
-$_SESSION['type'] = 'user';
 
 header('Location: ./home.php');
 exit();
