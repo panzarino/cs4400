@@ -31,12 +31,12 @@ $type = $_SESSION['type'];
             ?>
             <div class="row">
                 <div class="col-md-6 text-center">
-                    <a href="" class="btn btn-primary">Take Transit</a>
+                    <a href="taketransit.php" class="btn btn-primary">Take Transit</a>
                     <br />
                     <br />
                 </div>
                 <div class="col-md-6 text-center">
-                    <a href="" class="btn btn-primary">View Transit History</a>
+                    <a href="viewtransithistory.php" class="btn btn-primary">View Transit History</a>
                     <br />
                     <br />
                 </div>
