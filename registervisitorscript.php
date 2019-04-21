@@ -4,7 +4,7 @@ $firstName = filter_input(INPUT_POST, 'firstName');
 $lastName = filter_input(INPUT_POST, 'lastName');
 $username = filter_input(INPUT_POST, 'username');
 $password = filter_input(INPUT_POST, 'password');
-$emails = filter_input(INPUT_POST, 'emails');
+$emails = explode(',', filter_input(INPUT_POST, 'emails'));
 
 // Create connection
 $connection = mysqli_connect(
@@ -28,14 +28,17 @@ if ($usernameresult == $username) {
     exit();
 }
 
-$emailquery = mysqli_prepare($connection, "SELECT Email FROM UserEmail WHERE Email IN (?)");
-mysqli_stmt_bind_param($emailquery, 's', $emails);
-mysqli_stmt_execute($emailquery);
-mysqli_stmt_bind_result($emailquery, $emailresult);
-
+// check if email exists
 $emailerror = '';
-while(mysqli_stmt_fetch($emailquery)) {
-    $emailerror .= $emailresult . ', ';
+$emailquery = mysqli_prepare($connection, "SELECT Email FROM UserEmail WHERE Email=?");
+foreach ($emails as $email) {
+    mysqli_stmt_bind_param($emailquery, 's', $email);
+    mysqli_stmt_execute($emailquery);
+    mysqli_stmt_bind_result($emailquery, $emailresult);
+    mysqli_stmt_fetch($emailquery);
+    if (isset($emailresult)) {
+        $emailerror .= $emailresult . ', ';
+    }
 }
 mysqli_stmt_close($emailquery);
 
@@ -63,7 +66,7 @@ mysqli_stmt_close($visitorquery);
 
 // create emails in database
 $emailinserquery = mysqli_prepare($connection, "INSERT INTO UserEmail (`Username`, `Email`) VALUES (?, ?)");
-foreach (explode(',', $emails) as $email) {
+foreach ($emails as $email) {
     mysqli_stmt_bind_param($emailinserquery, 'ss', $username, $email);
     mysqli_stmt_execute($emailinserquery);
 }
