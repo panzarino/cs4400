@@ -203,7 +203,7 @@ mysqli_stmt_close($query);
                         <button type="submit" class="btn btn-primary" formaction="createevent.php" formmethod="GET" value="create">Create</button>
                     </div>
                     <div class="col-md-3 text-center">
-                        <button type="submit" class="btn btn-primary" formaction="editsite.php" formmethod="GET">View/Edit</button>
+                        <button type="submit" class="btn btn-primary" formaction="editevent.php" formmethod="GET">View/Edit</button>
                     </div>
                     <div class="col-md-3 text-center">
                         <button type="submit" class="btn btn-primary" formaction="deleteeventscript.php" formmethod="POST">Delete</button>
