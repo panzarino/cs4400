@@ -73,7 +73,7 @@ CREATE TABLE `TakeTransit` (
 CREATE TABLE `Transit` (
   `TransitType` varchar(5) NOT NULL,
   `TransitRoute` varchar(20) NOT NULL,
-  `TransitPrice` int(11) NOT NULL
+  `TransitPrice` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `User` (
