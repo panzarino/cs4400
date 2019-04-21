@@ -17,11 +17,22 @@ $connection = mysqli_connect(
     $_SERVER['DB_DATABASE']
 );
 
-// log transit in db
-$query = mysqli_prepare($connection, "INSERT INTO TakeTransit (Username, TransitType, TransitRoute, TransitDate) VALUES (?,?,?,?)");
+// check if same transit logged on same day
+$query = mysqli_prepare($connection, "SELECT Username FROM TakeTransit 
+                                                WHERE Username=? AND TransitType=? AND TransitRoute=? AND TransitDate=?");
 mysqli_stmt_bind_param($query, 'ssss', $username, $type, $route, $date);
 mysqli_stmt_execute($query);
+mysqli_stmt_bind_result($query, $founduser);
+mysqli_stmt_fetch($query);
 mysqli_stmt_close($query);
+
+// log transit in db if user didn't take same one today
+if (!isset($founduser)) {
+    $query = mysqli_prepare($connection, "INSERT INTO TakeTransit (Username, TransitType, TransitRoute, TransitDate) VALUES (?,?,?,?)");
+    mysqli_stmt_bind_param($query, 'ssss', $username, $type, $route, $date);
+    mysqli_stmt_execute($query);
+    mysqli_stmt_close($query);
+}
 
 
 // redirect
