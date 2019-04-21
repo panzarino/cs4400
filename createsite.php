@@ -32,7 +32,7 @@ mysqli_close($connection);
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Name</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="name" maxlength="20" required>
+                                <input type="text" class="form-control" name="name" maxlength="40" required>
                             </div>
                         </div>
                     </div>
