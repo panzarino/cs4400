@@ -76,7 +76,7 @@
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Address</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="address" required>
+                                <input type="text" class="form-control" name="address" maxlength="40" required>
                             </div>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">City</label>
                             <div class="col-sm-8">
-                                <input class="form-control" type="text" name="city" required>
+                                <input class="form-control" type="text" name="city" maxlength="20" required>
                             </div>
                         </div>
                     </div>
