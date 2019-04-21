@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-lg-6 offset-lg-3 text-center">
             <h1 class="mt-5">Register Navigation</h1>
-            <a href="" class="btn btn-primary">User Only</a>
+            <a href="registeruser.php" class="btn btn-primary">User Only</a>
             <br />
             <br />
             <a href="registervisitor.php" class="btn btn-primary">Visitor Only</a>
