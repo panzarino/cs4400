@@ -42,7 +42,7 @@ $type = $_SESSION['type'];
                 </div>
                 <?php
                 if ($type == 'administrator' || $type == 'administrator-visitor' || $type == 'manager' || $type == 'manager-visitor' || $type == 'staff' || $type == 'staff-visitor') {
-                    echo '<div class="col-md-6 text-center"><a href="" class="btn btn-primary">Manage Profile</a><br /><br /></div>';
+                    echo '<div class="col-md-6 text-center"><a href="manageprofile.php" class="btn btn-primary">Manage Profile</a><br /><br /></div>';
                 }
                 if ($type == 'administrator' || $type == 'administrator-visitor') {
                     echo '<div class="col-md-6 text-center"><a href="manageuser.php" class="btn btn-primary">Manage User</a><br /><br /></div>';
