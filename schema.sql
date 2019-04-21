@@ -173,7 +173,7 @@ ALTER TABLE `AssignTo`
   ADD CONSTRAINT `assignto_ibfk_2` FOREIGN KEY (`EventName`,`StartDate`,`SiteName`) REFERENCES `Event` (`EventName`, `StartDate`, `SiteName`);
 
 ALTER TABLE `Connect`
-  ADD CONSTRAINT `connect_1` FOREIGN KEY (`SiteName`) REFERENCES `Site` (`SiteName`),
+  ADD CONSTRAINT `connect_1` FOREIGN KEY (`SiteName`) REFERENCES `Site` (`SiteName`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `connect_2` FOREIGN KEY (`TransitType`,`TransitRoute`) REFERENCES `Transit` (`TransitType`, `TransitRoute`);
 
 ALTER TABLE `Employee`
@@ -207,7 +207,7 @@ ALTER TABLE `Visitor`
 
 ALTER TABLE `VisitSite`
   ADD CONSTRAINT `visit_site_1` FOREIGN KEY (`VisitorUsername`) REFERENCES `User` (`Username`),
-  ADD CONSTRAINT `visit_site_2` FOREIGN KEY (`SiteName`) REFERENCES `Site` (`SiteName`);
+  ADD CONSTRAINT `visit_site_2` FOREIGN KEY (`SiteName`) REFERENCES `Site` (`SiteName`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

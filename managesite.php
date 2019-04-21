@@ -136,7 +136,7 @@ mysqli_close($connection);
                         <a href="home.php" class="btn btn-primary">Edit</a>
                     </div>
                     <div class="col-md-3 text-center">
-                        <button type="submit" class="btn btn-primary" name="status" value="declined">Delete</button>
+                        <button type="submit" class="btn btn-primary" formaction="deletesitescript.php">Delete</button>
                     </div>
                 </div>
             </form>
@@ -146,7 +146,7 @@ mysqli_close($connection);
 
 <script>
     function verify() {
-        if (typeof $('input[name=username]:checked').val() === 'undefined') {
+        if (typeof $('input[name=site]:checked').val() === 'undefined') {
             return false;
         }
         return true;
