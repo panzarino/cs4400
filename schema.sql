@@ -21,7 +21,7 @@ CREATE TABLE `AssignTo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `Connect` (
-  `SiteName` varchar(20) NOT NULL,
+  `SiteName` varchar(40) NOT NULL,
   `TransitType` varchar(5) NOT NULL,
   `TransitRoute` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -103,7 +103,7 @@ CREATE TABLE `Visitor` (
 
 CREATE TABLE `VisitSite` (
   `VisitorUsername` varchar(20) NOT NULL,
-  `SiteName` varchar(20) NOT NULL,
+  `SiteName` varchar(40) NOT NULL,
   `VisitSiteDate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
