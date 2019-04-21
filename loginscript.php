@@ -71,7 +71,7 @@ if (isset($employeeresult)) {
         mysqli_stmt_fetch($managerquery);
         mysqli_stmt_close($managerquery);
 
-        if (!isset($adminresult)) {
+        if (!isset($managerresult)) {
             $staffquery = mysqli_prepare($connection, "SELECT Username FROM Staff WHERE Username=? LIMIT 1");
             mysqli_stmt_bind_param($staffquery, 's', $usernameresult);
             mysqli_stmt_execute($staffquery);
@@ -86,28 +86,27 @@ session_start();
 
 $_SESSION['username'] = $usernameresult;
 
+
 if (isset($visitorresult)) {
     if (isset($adminresult)) {
         $_SESSION['type'] = 'administrator-visitor';
-    }
-    if (isset($managerresult)) {
+    } else if (isset($managerresult)) {
         $_SESSION['type'] = 'manager-visitor';
-    }
-    if (isset($staffresult)) {
+    } else if (isset($staffresult)) {
         $_SESSION['type'] = 'staff-visitor';
+    } else {
+        $_SESSION['type'] = 'visitor';
     }
-    $_SESSION['type'] = 'visitor';
 } else {
     if (isset($adminresult)) {
         $_SESSION['type'] = 'administrator';
-    }
-    if (isset($managerresult)) {
+    } else if (isset($managerresult)) {
         $_SESSION['type'] = 'manager';
-    }
-    if (isset($staffresult)) {
+    } else if (isset($staffresult)) {
         $_SESSION['type'] = 'staff';
+    } else {
+        $_SESSION['type'] = 'user';
     }
-    $_SESSION['type'] = 'user';
 }
 
 header('Location: ./home.php');

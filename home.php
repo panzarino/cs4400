@@ -20,7 +20,7 @@ $type = $_SESSION['type'];
             if ($type == 'administrator' || $type == 'administrator-visitor') {
                 echo '<h1 class="mt-5">Administrator Functionality</h1>';
             } else if ($type == 'manager' || $type == 'manager-visitor') {
-                echo '<h1 class="mt-5">Administrator Functionality</h1>';
+                echo '<h1 class="mt-5">Manager Functionality</h1>';
             } else if ($type == 'staff' || $type == 'staff-visitor') {
                 echo '<h1 class="mt-5">Staff Functionality</h1>';
             } else if ($type == 'visitor') {
