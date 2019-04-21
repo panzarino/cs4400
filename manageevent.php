@@ -124,7 +124,7 @@ mysqli_stmt_close($query);
                             <tbody>
                             <?php
                             foreach ($events as $event) {
-                                echo '<tr><td><input type="radio" name="event" value="' . $event['name'] . '-' . $event['startdate'] . '-' . $event['siteName'] . '"></td><td>' . $event['name'] . '</td><td>' . $event['staffCount'] . '</td><td>' . $event['duration'] . '</td><td>' . $event['visitCount'] . '</td><td>' . $event['visitCount'] * $event['price'] . '</td></tr>';
+                                echo '<tr><td><input type="radio" name="event" value="' . $event['name'] . ',' . $event['startdate'] . ',' . $event['siteName'] . '"></td><td>' . $event['name'] . '</td><td>' . $event['staffCount'] . '</td><td>' . $event['duration'] . '</td><td>' . $event['visitCount'] . '</td><td>' . $event['visitCount'] * $event['price'] . '</td></tr>';
                             }
                             ?>
                             </tbody>
@@ -143,7 +143,7 @@ mysqli_stmt_close($query);
                         <button type="submit" class="btn btn-primary" formaction="editsite.php" formmethod="GET">View/Edit</button>
                     </div>
                     <div class="col-md-3 text-center">
-                        <button type="submit" class="btn btn-primary" formaction="deletesitescript.php" formmethod="POST">Delete</button>
+                        <button type="submit" class="btn btn-primary" formaction="deleteeventscript.php" formmethod="POST">Delete</button>
                     </div>
                 </div>
             </form>
@@ -153,7 +153,7 @@ mysqli_stmt_close($query);
 
 <script>
     function verify() {
-        if (typeof $('input[name=site]:checked').val() === 'undefined' && $(document.activeElement).val() !== 'create') {
+        if (typeof $('input[name=event]:checked').val() === 'undefined' && $(document.activeElement).val() !== 'create') {
             return false;
         }
         return true;
