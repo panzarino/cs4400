@@ -15,7 +15,7 @@ $connection = mysqli_connect(
 );
 
 // check if username exists
-$usernamequery = mysqli_prepare($connection, "SELECT Username FROM User WHERE Username=? LIMIT 1");
+$usernamequery = mysqli_prepare($connection, "SELECT Username FROM User WHERE Username=?");
 mysqli_stmt_bind_param($usernamequery, 's', $username);
 mysqli_stmt_execute($usernamequery);
 mysqli_stmt_bind_result($usernamequery, $usernameresult);
