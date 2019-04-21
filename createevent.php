@@ -119,8 +119,18 @@ mysqli_close($connection);
                         <button type="submit" class="btn btn-primary">Create</button>
                     </div>
                 </div>
-                <div id="errorMessage"></div>
             </form>
+            <div id="errorMessage"></div>
+            <?php
+            if (isset($_GET['error'])) {
+                if ($_GET['error'] == 'conflict') {
+                    echo '<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Could not create event. That event conflicts with another event at the same site.</div>';
+                }
+                if ($_GET['error'] == 'staffconflict') {
+                    echo '<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Could not create event. Some selected staff members have other events at that time.</div>';
+                }
+            }
+            ?>
         </div>
     </div>
 </div>
