@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-lg-6 offset-lg-3 text-center">
             <h1 class="mt-5">Atlanta Beltline Login</h1>
-            <form>
+            <form action="loginscript.php" method="POST">
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label">Email</label>
                     <div class="col-sm-10">
@@ -27,6 +27,16 @@
                     </div>
                 </div>
             </form>
+            <?php
+            if (isset($_GET['error'])) {
+                if ($_GET['error'] == 'credentials') {
+                    echo '<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Incorrect username or password.</div>';
+                }
+                if ($_GET['error'] == 'approval') {
+                    echo '<div class="alert alert-warning text-center" role="alert" style="margin-top: 30px">Your administrator has not approved your account yet.</div>';
+                }
+            }
+            ?>
         </div>
     </div>
 </div>
