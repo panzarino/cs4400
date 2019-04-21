@@ -24,6 +24,16 @@ if (!isset($site)) {
     exit();
 }
 
+$events = [];
+
+$query = mysqli_prepare($connection, "SELECT EventName, StartDate, SiteName, EventPrice, DATEDIFF(EndDate, StartDate) + 1 as Duration, (SELECT COUNT(*) FROM AssignTo WHERE AssignTo.EventName=Event.EventName AND AssignTo.StartDate=Event.StartDate AND AssignTo.SiteName=Event.SiteName) AS StaffCount, (SELECT COUNT(*) FROM VisitEvent WHERE VisitEvent.EventName=Event.EventName AND VisitEvent.StartDate=Event.StartDate AND VisitEvent.SiteName=Event.SiteName) AS VisitCount FROM Event WHERE SiteName=?");
+mysqli_stmt_bind_param($query, 's', $site);
+mysqli_stmt_execute($query);
+mysqli_stmt_bind_result($query, $resultname, $resultstartdate, $resultsitename, $resultprice, $resultduration, $resultstaffcount, $resultvisitcount);
+while (mysqli_stmt_fetch($query)) {
+    array_push($events, array('name' => $resultname, 'startdate' => $resultstartdate, 'siteName' => $resultsitename, 'price' => $resultprice, 'duration' => $resultduration, 'staffCount' => $resultstaffcount, 'visitCount' => $resultvisitcount));
+}
+mysqli_stmt_close($query);
 
 ?>
 
@@ -105,18 +115,19 @@ if (!isset($site)) {
                             <tr>
                                 <th scope="col"></th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Manager</th>
-                                <th scope="col">Open Everyday</th>
+                                <th scope="col">Staff Count</th>
+                                <th scope="col">Duration (days)</th>
+                                <th scope="col">Total Visits</th>
+                                <th scope="col">Total Revenue ($)</th>
                             </tr>
                             </thead>
-<!--                            <tbody>-->
-<!--                            --><?php
-//                            foreach ($sites as $s) {
-//                                if (($site == 'all' || $site == null || $site == $s['name']) && ($manager == 'all' || $manager == null || $manager == $s['username']) && ($open == 'all' || $open == null || (($open == 'yes') == $s['open'])))
-//                                    echo '<tr><td><input type="radio" name="site" value="' . $s['name'] . '"></td><td>' . $s['name'] . '</td><td>' . $s['firstName'] . ' ' . $s['lastName'] . '</td><td>' . ($s['open'] ? 'Yes' : 'No') . '</td></tr>';
-//                            }
-//                            ?>
-<!--                            </tbody>-->
+                            <tbody>
+                            <?php
+                            foreach ($events as $event) {
+                                echo '<tr><td><input type="radio" name="event" value="' . $event['name'] . '-' . $event['startdate'] . '-' . $event['siteName'] . '"></td><td>' . $event['name'] . '</td><td>' . $event['staffCount'] . '</td><td>' . $event['duration'] . '</td><td>' . $event['visitCount'] . '</td><td>' . $event['visitCount'] * $event['price'] . '</td></tr>';
+                            }
+                            ?>
+                            </tbody>
                         </table>
                     </div>
                 </div>
