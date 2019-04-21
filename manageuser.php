@@ -19,6 +19,7 @@ while (mysqli_stmt_fetch($query)) {
     array_push($users, array('type' => $resulttype, 'username' => $resultusername, 'status' => $resultstatus, 'emailCount' => $resultemailcount));
 }
 mysqli_stmt_close($query);
+mysqli_close($connection);
 ?>
 
 <?php include('header.php') ?>

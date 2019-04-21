@@ -51,7 +51,7 @@ $type = $_SESSION['type'];
                     echo '<div class="col-md-6 text-center"><a href="" class="btn btn-primary">Manage Transit</a><br /><br /></div>';
                 }
                 if ($type == 'administrator' || $type == 'administrator-visitor') {
-                    echo '<div class="col-md-6 text-center"><a href="" class="btn btn-primary">Manage Site</a><br /><br /></div>';
+                    echo '<div class="col-md-6 text-center"><a href="managesite.php" class="btn btn-primary">Manage Site</a><br /><br /></div>';
                 }
                 if ($type == 'manager' || $type == 'manager-visitor') {
                     echo '<div class="col-md-6 text-center"><a href="" class="btn btn-primary">Manage Event</a><br /><br /></div>';
