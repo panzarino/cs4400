@@ -70,8 +70,12 @@ mysqli_close($connection);
                                 <select name="site" class="form-control">
                                     <option value="all">-- ALL --</option>
                                     <?php
-                                    foreach ($sites as $site) {
-                                        echo '<option value="'.$site.'">'.$site.'</option>';
+                                    foreach ($sites as $s) {
+                                        if ($site != $s) {
+                                            echo '<option value="'.$s.'">'.$s.'</option>';
+                                        } else {
+                                            echo '<option selected value="'.$s.'">'.$s.'</option>';
+                                        }
                                     }
                                     ?>
                                 </select>
@@ -83,10 +87,10 @@ mysqli_close($connection);
                             <label class="col-sm-4 col-form-label">Transport Type</label>
                             <div class="col-sm-8">
                                 <select name="type" class="form-control">
-                                    <option value="all">-- ALL --</option>
-                                    <option value="MARTA">MARTA</option>
-                                    <option value="Bus">Bus</option>
-                                    <option value="Bike">Bike</option>
+                                    <option <?= $type == 'all' ? 'selected' : '' ?> value="all">-- ALL --</option>
+                                    <option <?= $type == 'MARTA' ? 'selected' : '' ?> value="MARTA">MARTA</option>
+                                    <option <?= $type == 'Bus' ? 'selected' : '' ?> value="Bus">Bus</option>
+                                    <option <?= $type == 'Bike' ? 'selected' : '' ?> value="Bike">Bike</option>
                                 </select>
                             </div>
                         </div>
@@ -97,13 +101,13 @@ mysqli_close($connection);
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Price Range</label>
                             <div class="col-sm-3">
-                                <input class="form-control" type="text" name="pricelow">
+                                <input value="<?= $pricelow ?>" class="form-control" type="text" name="pricelow">
                             </div>
                             <div class="col-sm-2 mt-2">
                                 to
                             </div>
                             <div class="col-sm-3">
-                                <input class="form-control" type="text" name="pricehi">
+                                <input value="<?= $pricehi ?>" class="form-control" type="text" name="pricehi">
                             </div>
                         </div>
                     </div>

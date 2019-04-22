@@ -6,8 +6,8 @@ $username = $_SESSION['username'];
 $type = filter_input(INPUT_GET, 'transportType');
 $route = filter_input(INPUT_GET, 'route');
 $site = filter_input(INPUT_GET, 'site');
-$pricelow = filter_input(INPUT_GET, 'pricelow');
-$pricehi = filter_input(INPUT_GET, 'pricehi');
+$start = filter_input(INPUT_GET, 'start');
+$end = filter_input(INPUT_GET, 'end');
 $connection = mysqli_connect(
     $_SERVER['DB_SERVERNAME'],
     $_SERVER['DB_USERNAME'],
@@ -16,13 +16,30 @@ $connection = mysqli_connect(
 );
 
 $transits = [];
-$query = mysqli_prepare($connection, "SELECT TransitType, TransitRoute, TransitDate, 
+if ($site != 'all') {
+    $query = mysqli_prepare($connection, "SELECT TakeTransit.TransitType, TakeTransit.TransitRoute, TakeTransit.TransitDate, SiteName,
                                             (SELECT TransitPrice FROM Transit 
                                                 WHERE TakeTransit.TransitType = Transit.TransitType 
                                                 AND TakeTransit.TransitRoute = Transit.TransitRoute) AS Price
-                                            FROM TakeTransit");
-mysqli_stmt_execute($query);
-mysqli_stmt_bind_result($query, $resulttype, $resultroute, $resultdate, $resultprice);
+                                            FROM TakeTransit, Connect 
+                                            WHERE TakeTransit.Username=?
+                                                AND SiteName=?
+                                                AND Connect.TransitType = TakeTransit.TransitType 
+                                                AND Connect.TransitRoute = TakeTransit.TransitRoute");
+    mysqli_stmt_bind_param($query, 'ss', $username, $site);
+    mysqli_stmt_execute($query);
+    mysqli_stmt_bind_result($query, $resulttype, $resultroute, $resultdate, $sitename, $resultprice);
+} else {
+    $query = mysqli_prepare($connection, "SELECT TransitType, TransitRoute, TransitDate,
+                                                (SELECT TransitPrice FROM Transit 
+                                                    WHERE TakeTransit.TransitType = Transit.TransitType 
+                                                    AND TakeTransit.TransitRoute = Transit.TransitRoute) AS Price
+                                                FROM TakeTransit 
+                                                WHERE TakeTransit.Username=?");
+    mysqli_stmt_bind_param($query, 's', $username);
+    mysqli_stmt_execute($query);
+    mysqli_stmt_bind_result($query, $resulttype, $resultroute, $resultdate, $resultprice);
+}
 while (mysqli_stmt_fetch($query)) {
     array_push($transits, array('type' => $resulttype, 'route' => $resultroute, 'price' => $resultprice, 'date' => $resultdate));
 }
@@ -55,10 +72,10 @@ mysqli_close($connection);
                             <label class="col-sm-4 col-form-label">Transport Type</label>
                             <div class="col-sm-8">
                                 <select name="transportType" class="form-control">
-                                    <option value="all">-- ALL --</option>
-                                    <option value="marta">MARTA</option>
-                                    <option value="bus">Bus</option>
-                                    <option value="bike">Bike</option>
+                                    <option <?= $type == 'all' ? 'selected' : '' ?> value="all">-- ALL --</option>
+                                    <option <?= $type == 'MARTA' ? 'selected' : '' ?> value="MARTA">MARTA</option>
+                                    <option <?= $type == 'Bus' ? 'selected' : '' ?> value="Bus">Bus</option>
+                                    <option <?= $type == 'Bike' ? 'selected' : '' ?> value="Bike">Bike</option>
                                 </select>
                             </div>
                         </div>
@@ -67,11 +84,15 @@ mysqli_close($connection);
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Contain Site</label>
                             <div class="col-sm-8">
-                                <select name="siteFilter" class="form-control">
+                                <select name="site" class="form-control">
                                     <option value="all">-- ALL --</option>
                                     <?php
-                                    foreach ($sites as $site) {
-                                        echo '<option value="'.$site.'">'.$site.'</option>';
+                                    foreach ($sites as $s) {
+                                        if ($site != $s) {
+                                            echo '<option value="'.$s.'">'.$s.'</option>';
+                                        } else {
+                                            echo '<option selected value="'.$s.'">'.$s.'</option>';
+                                        }
                                     }
                                     ?>
                                 </select>
@@ -84,7 +105,7 @@ mysqli_close($connection);
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Route</label>
                             <div class="col-sm-8">
-                                <input class="form-control" type="text" name="route">
+                                <input value="<?= $route ?>" class="form-control" type="text" name="route">
                             </div>
                         </div>
                     </div>
@@ -92,7 +113,7 @@ mysqli_close($connection);
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Start Date</label>
                             <div class="col-sm-8">
-                                <input class="form-control" type="date" name="start">
+                                <input value="<?= $start ?>" class="form-control" type="date" name="start">
                             </div>
                         </div>
                     </div>
@@ -100,7 +121,7 @@ mysqli_close($connection);
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">End Date</label>
                             <div class="col-sm-8">
-                                <input class="form-control" type="date" name="end">
+                                <input value="<?= $end ?>" class="form-control" type="date" name="end">
                             </div>
                         </div>
                     </div>
@@ -123,8 +144,11 @@ mysqli_close($connection);
                         <tbody>
                         <?php
                         foreach ($transits as $t) {
-//                                if (($site == 'all' || $site == null || $site == $s['name']) && ($manager == 'all' || $manager == null || $manager == $s['username']) && ($open == 'all' || $open == null || (($open == 'yes') == $s['open'])))
-                            echo '<tr><td>'. $t['date'] .'</td><td>' . $t['route'] . '</td><td>' . $t['type'] . '</td><td>' . $t['price'] . '</td><td>' . $t['sites'] . '</td></tr>';
+                            if (($type == 'all' || $type == null || $type == $t['type'])
+                                && ($route == null || $route == '' || $route == $t['route'])
+                                && ($start == '' || $start == null || $start <= $t['date'])
+                                && ($end == '' || $end == null || $end >= $t['date']))
+                                echo '<tr><td>'. $t['date'] .'</td><td>' . $t['route'] . '</td><td>' . $t['type'] . '</td><td>' . $t['price'] . '</td><td>' . $t['sites'] . '</td></tr>';
                         }
                         ?>
                         </tbody>
