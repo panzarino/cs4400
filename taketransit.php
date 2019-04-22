@@ -1,10 +1,10 @@
 <?php
 
-$type = filter_input(INPUT_GET, 'transportType');
-$route = filter_input(INPUT_GET, 'route');
+$type = filter_input(INPUT_GET, 'type');
 $site = filter_input(INPUT_GET, 'site');
 $pricelow = filter_input(INPUT_GET, 'pricelow');
 $pricehi = filter_input(INPUT_GET, 'pricehi');
+
 $connection = mysqli_connect(
     $_SERVER['DB_SERVERNAME'],
     $_SERVER['DB_USERNAME'],
@@ -12,19 +12,36 @@ $connection = mysqli_connect(
     $_SERVER['DB_DATABASE']
 );
 
+// get list of transits to display in table
 $transits = [];
-$query = mysqli_prepare($connection, "SELECT TransitType, TransitRoute, TransitPrice, 
+
+// if we are filtering by site only display those rows
+if ($site != 'all') {
+    $query = mysqli_prepare($connection, "SELECT DISTINCT Transit.TransitType, Transit.TransitRoute, TransitPrice, SiteName,
+                                                (SELECT COUNT(*) FROM Connect 
+                                                    WHERE Connect.TransitType = Transit.TransitType 
+                                                    AND Connect.TransitRoute = Transit.TransitRoute) AS SiteCount
+                                                FROM Transit, Connect
+                                                WHERE SiteName=? AND Connect.TransitType = Transit.TransitType 
+                                                        AND Connect.TransitRoute = Transit.TransitRoute");
+    mysqli_stmt_bind_param($query, 's', $site);
+    mysqli_stmt_execute($query);
+    mysqli_stmt_bind_result($query, $resulttype, $resultroute, $resultprice, $sitename, $resultsitecount);
+} else {
+    $query = mysqli_prepare($connection, "SELECT TransitType, TransitRoute, TransitPrice, 
                                             (SELECT COUNT(*) FROM Connect 
                                                 WHERE Connect.TransitType = Transit.TransitType 
                                                 AND Connect.TransitRoute = Transit.TransitRoute) AS SiteCount
                                             FROM Transit");
-mysqli_stmt_execute($query);
-mysqli_stmt_bind_result($query, $resulttype, $resultroute, $resultprice, $resultsitecount);
+    mysqli_stmt_execute($query);
+    mysqli_stmt_bind_result($query, $resulttype, $resultroute, $resultprice, $resultsitecount);
+}
 while (mysqli_stmt_fetch($query)) {
     array_push($transits, array('type' => $resulttype, 'route' => $resultroute, 'price' => $resultprice, 'sites' => $resultsitecount));
 }
 mysqli_stmt_close($query);
 
+// get sites for filter dropdown
 $query = mysqli_prepare($connection, "SELECT SiteName FROM Site");
 mysqli_stmt_execute($query);
 mysqli_stmt_bind_result($query, $sitesresult);
@@ -33,7 +50,6 @@ while (mysqli_stmt_fetch($query)) {
     array_push($sites, $sitesresult);
 }
 mysqli_stmt_close($query);
-
 
 mysqli_close($connection);
 ?>
@@ -51,7 +67,7 @@ mysqli_close($connection);
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Contain Site</label>
                             <div class="col-sm-8">
-                                <select name="siteFilter" class="form-control">
+                                <select name="site" class="form-control">
                                     <option value="all">-- ALL --</option>
                                     <?php
                                     foreach ($sites as $site) {
@@ -66,11 +82,11 @@ mysqli_close($connection);
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Transport Type</label>
                             <div class="col-sm-8">
-                                <select name="transportType" class="form-control">
+                                <select name="type" class="form-control">
                                     <option value="all">-- ALL --</option>
-                                    <option value="marta">MARTA</option>
-                                    <option value="bus">Bus</option>
-                                    <option value="bike">Bike</option>
+                                    <option value="MARTA">MARTA</option>
+                                    <option value="Bus">Bus</option>
+                                    <option value="Bike">Bike</option>
                                 </select>
                             </div>
                         </div>
@@ -116,8 +132,9 @@ mysqli_close($connection);
                             <tbody>
                             <?php
                             foreach ($transits as $t) {
-//                                if (($site == 'all' || $site == null || $site == $s['name']) && ($manager == 'all' || $manager == null || $manager == $s['username']) && ($open == 'all' || $open == null || (($open == 'yes') == $s['open'])))
-                                echo '<tr><td><input type="radio" name="routetbl" value="' . $t['route'] . ',' . $t['type'] .'"></td><td>' . $t['route'] . '</td><td>' . $t['type'] . '</td><td>' . $t['price'] . '</td><td>' . $t['sites'] . '</td></tr>';
+                                $pricecheck = ($pricelow == null || $pricelow == '' || intval($pricelow) <= $t['price']) && ($pricehi == null || $pricehi == '' || intval($pricehi) >= $t['price']);
+                                if (($type == 'all' || $type == null || $type == $t['type']) && $pricecheck)
+                                    echo '<tr><td><input type="radio" name="routetbl" value="' . $t['route'] . ',' . $t['type'] .'"></td><td>' . $t['route'] . '</td><td>' . $t['type'] . '</td><td>' . $t['price'] . '</td><td>' . $t['sites'] . '</td></tr>';
                             }
                             ?>
                             </tbody>
