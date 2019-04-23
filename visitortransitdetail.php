@@ -3,6 +3,13 @@
 $type = filter_input(INPUT_GET, 'type');
 $site = filter_input(INPUT_GET, 'site');
 
+$sort = filter_input(INPUT_GET, 'sort');
+if (isset($sort) && $sort != '') {
+    $sort = ' ORDER BY '.$sort;
+} else {
+    $sort = ' ORDER BY Transit.TransitType ASC';
+}
+
 $connection = mysqli_connect(
     $_SERVER['DB_SERVERNAME'],
     $_SERVER['DB_USERNAME'],
@@ -20,7 +27,7 @@ $qstr = "SELECT DISTINCT Transit.TransitType, Transit.TransitRoute, TransitPrice
                                                 WHERE SiteName=? AND Connect.TransitType = Transit.TransitType 
                                                         AND Connect.TransitRoute = Transit.TransitRoute";
 if (isset($type) && $type != 'all') $qstr .= " AND Transit.TransitType=?";
-$query = mysqli_prepare($connection, $qstr);
+$query = mysqli_prepare($connection, $qstr.$sort);
 if (isset($type) && $type != 'all') {
     mysqli_stmt_bind_param($query, 'ss', $site, $type);
 } else {
@@ -99,9 +106,9 @@ mysqli_close($connection);
                             <tr>
                                 <th scope="col"></th>
                                 <th scope="col">Route</th>
-                                <th scope="col">Transport Type</th>
-                                <th scope="col">Price</th>
-                                <th scope="col"># Connected Sites</th>
+                                <th scope="col">Transport Type <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Transit.TransitType+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Transit.TransitType+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Price <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=TransitPrice+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=TransitPrice+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col"># Connected Sites <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=SiteCount+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=SiteCount+DESC"><i class="fas fa-chevron-down"></i></a></th>
                             </tr>
                             </thead>
                             <tbody>
