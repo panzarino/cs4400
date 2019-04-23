@@ -27,6 +27,7 @@ mysqli_stmt_fetch($profilequery);
 mysqli_stmt_close($profilequery);
 $address = $address . ", " . $city . ", " . $state . " " . $zip;
 
+$siteName = '';
 if ($type == 'manager' || $type == 'manager-visitor') {
     $sitequery = mysqli_prepare($connection, "SELECT SiteName FROM Site WHERE ManagerUsername=? LIMIT 1");
     mysqli_stmt_bind_param($sitequery, 's', $username);

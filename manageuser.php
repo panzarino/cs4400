@@ -93,7 +93,7 @@ mysqli_close($connection);
                             <tbody>
                             <?php
                             foreach ($users as $user) {
-                                if (($username == '' || $username == null || $username == $user['username']) && ($type == 'all' || $type == null || $type == $user['type']) && ($status == 'all' || $status == null || $status == $user['status'])) {
+                                if (($username == '' || $username == null || $username == $user['username']) && ($type == 'all' || $type == null || $type == $user['type']) && ($status == 'all' || $status == $user['status'])) {
                                     echo '<tr><td><input type="radio" name="username" value="' . $user['username'] . '"></td><td>' . $user['username'] . '</td><td>' . $user['emailCount'] . '</td><td>' . ucfirst($user['type']) . '</td><td>' . ucfirst($user['status']) . '</td></tr>';
                                 }
                             }

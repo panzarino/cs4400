@@ -111,7 +111,9 @@ mysqli_close($connection);
                             <tbody>
                             <?php
                             foreach ($rows as $t) {
-                                echo '<tr><td><input type="radio" name="key" value="' . $t['event'] . ',' . $t['start'] . ',' . $t['site'].'"></td><td>' . $t['event'] . '</td><td>' . $t['site'] . '</td><td>' . $t['start'] . '</td><td>' . $t['end'] . '</td><td>' . $t['staff'] . '</td></tr>';
+                                if (isset($event)) {
+                                    echo '<tr><td><input type="radio" name="key" value="' . $t['event'] . ',' . $t['start'] . ',' . $t['site'] . '"></td><td>' . $t['event'] . '</td><td>' . $t['site'] . '</td><td>' . $t['start'] . '</td><td>' . $t['end'] . '</td><td>' . $t['staff'] . '</td></tr>';
+                                }
                             }
                             ?>
                             </tbody>

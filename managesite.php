@@ -117,7 +117,7 @@ mysqli_close($connection);
                             <tbody>
                             <?php
                             foreach ($sites as $s) {
-                                if (($site == 'all' || $site == null || $site == $s['name']) && ($manager == 'all' || $manager == null || $manager == $s['username']) && ($open == 'all' || $open == null || (($open == 'yes') == $s['open'])))
+                                if (($site == 'all' || $site == $s['name']) && ($manager == 'all' || $manager == null || $manager == $s['username']) && ($open == 'all' || $open == null || (($open == 'yes') == $s['open'])))
                                     echo '<tr><td><input type="radio" name="site" value="' . $s['name'] . '"></td><td>' . $s['name'] . '</td><td>' . $s['firstName'] . ' ' . $s['lastName'] . '</td><td>' . ($s['open'] ? 'Yes' : 'No') . '</td></tr>';
                                 }
                             ?>

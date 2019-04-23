@@ -143,9 +143,11 @@ mysqli_close($connection);
                         <tbody>
                         <?php
                         foreach ($rows as $r) {
+                            if (isset($site)) {
 //                            $pricecheck = ($pricelow == null || $pricelow == '' || intval($pricelow) <= $t['price']) && ($pricehi == null || $pricehi == '' || intval($pricehi) >= $t['price']);
 //                            if (($type == 'all' || $type == null || $type == $t['type']) && ($route == null || $route == '' || $route == $t['route']) && $pricecheck)
-                                echo '<tr><td>'. $r['name'] .'</td><td>'. $r['shifts'] .'</td></tr>';
+                                echo '<tr><td>' . $r['name'] . '</td><td>' . $r['shifts'] . '</td></tr>';
+                            }
                         }
                         ?>
                         </tbody>

@@ -175,7 +175,8 @@ mysqli_stmt_close($query);
                             <tbody>
                             <?php
                             foreach ($events as $event) {
-                                if (($name == '' || $name == null || stripos($event['name'], $name) || strcasecmp($event['name'], $name) == 0)
+                                if (isset($name)
+                                    && ($name == '' || $name == null || stripos($event['name'], $name) || strcasecmp($event['name'], $name) == 0)
                                     && ($description == '' || $description == null || stripos($event['description'], $description) || strcasecmp($event['description'], $description) == 0)
                                     && ($startdate == '' || $startdate == null || strtotime($startdate) <= strtotime($event['enddate']))
                                     && ($enddate == '' || $enddate == null || strtotime($enddate) >= strtotime($event['startdate']))
