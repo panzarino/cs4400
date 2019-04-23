@@ -89,11 +89,11 @@ mysqli_close($connection);
 </div>
 
 <script>
-    let sites = [];
+    var sites = [];
 
     function handleSites() {
         sites = $('#sites').val();
-        let siteString = '';
+        var siteString = '';
         sites.forEach(function (site) {
             siteString += site + ',';
         });
