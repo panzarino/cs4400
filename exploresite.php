@@ -2,7 +2,7 @@
 
 $startdate = filter_input(INPUT_GET, 'startdate');
 if (strlen($startdate) == 0) $startdate = 0;
-$enddate = filter_input(INPUT_GET, 'endddate');
+$enddate = filter_input(INPUT_GET, 'enddate');
 if (strlen($enddate) == 0) $enddate = PHP_INT_MAX;
 $site = filter_input(INPUT_GET, 'site');
 $open = filter_input(INPUT_GET, 'open');
