@@ -1,5 +1,12 @@
 <?php
 
+$sort = filter_input(INPUT_GET, 'sort');
+if (isset($sort) && $sort != '') {
+    $sort = ' ORDER BY '.$sort;
+} else {
+    $sort = ' ORDER BY EventName ASC';
+}
+
 $name = filter_input(INPUT_GET, 'name');
 $description = filter_input(INPUT_GET, 'description');
 $startdate = filter_input(INPUT_GET, 'startdate');
@@ -37,12 +44,12 @@ if (!isset($site)) {
 
 $events = [];
 
-$query = mysqli_prepare($connection, "SELECT EventName, StartDate, EndDate, Description, EventPrice, DATEDIFF(EndDate, StartDate) + 1 as Duration, (SELECT COUNT(*) FROM AssignTo WHERE AssignTo.EventName=Event.EventName AND AssignTo.StartDate=Event.StartDate AND AssignTo.SiteName=Event.SiteName) AS StaffCount, (SELECT COUNT(*) FROM VisitEvent WHERE VisitEvent.EventName=Event.EventName AND VisitEvent.StartDate=Event.StartDate AND VisitEvent.SiteName=Event.SiteName) AS VisitCount FROM Event WHERE SiteName=?");
+$query = mysqli_prepare($connection, "SELECT EventName, StartDate, EndDate, Description, EventPrice, DATEDIFF(EndDate, StartDate) + 1 as Duration, (SELECT COUNT(*) FROM AssignTo WHERE AssignTo.EventName=Event.EventName AND AssignTo.StartDate=Event.StartDate AND AssignTo.SiteName=Event.SiteName) AS StaffCount, (SELECT COUNT(*) FROM VisitEvent WHERE VisitEvent.EventName=Event.EventName AND VisitEvent.StartDate=Event.StartDate AND VisitEvent.SiteName=Event.SiteName) AS VisitCount, ((SELECT COUNT(*) FROM VisitEvent WHERE VisitEvent.EventName=Event.EventName AND VisitEvent.StartDate=Event.StartDate AND VisitEvent.SiteName=Event.SiteName) * EventPrice) AS Revenue FROM Event WHERE SiteName=?".$sort);
 mysqli_stmt_bind_param($query, 's', $site);
 mysqli_stmt_execute($query);
-mysqli_stmt_bind_result($query, $resultname, $resultstartdate, $resultenddate, $resultdescription, $resultprice, $resultduration, $resultstaffcount, $resultvisitcount);
+mysqli_stmt_bind_result($query, $resultname, $resultstartdate, $resultenddate, $resultdescription, $resultprice, $resultduration, $resultstaffcount, $resultvisitcount, $resultrevenue);
 while (mysqli_stmt_fetch($query)) {
-    array_push($events, array('name' => $resultname, 'startdate' => $resultstartdate, 'enddate' => $resultenddate, 'siteName' => $site, 'description' => $resultdescription, 'price' => $resultprice, 'duration' => $resultduration, 'staffCount' => $resultstaffcount, 'visitCount' => $resultvisitcount));
+    array_push($events, array('name' => $resultname, 'startdate' => $resultstartdate, 'enddate' => $resultenddate, 'siteName' => $site, 'description' => $resultdescription, 'price' => $resultprice, 'duration' => $resultduration, 'staffCount' => $resultstaffcount, 'visitCount' => $resultvisitcount, 'revenue' => $resultrevenue));
 }
 mysqli_stmt_close($query);
 
@@ -152,6 +159,7 @@ mysqli_stmt_close($query);
                     <div class="col-md-6">
                         <div class="form-group row">
                             <div class="col-sm-12 text-center">
+                                <input type="hidden" name="sort" value="<?= filter_input(INPUT_GET, 'sort') ?>">
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </div>
                         </div>
@@ -165,11 +173,11 @@ mysqli_stmt_close($query);
                             <thead>
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Staff Count</th>
-                                <th scope="col">Duration (days)</th>
-                                <th scope="col">Total Visits</th>
-                                <th scope="col">Total Revenue ($)</th>
+                                <th scope="col">Name <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=EventName+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=EventName+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Staff Count <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=StaffCount+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=StaffCount+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Duration (days) <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Duration+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Duration+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Total Visits <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=VisitCount+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=VisitCount+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Total Revenue ($) <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Revenue+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Revenue+DESC"><i class="fas fa-chevron-down"></i></a></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -184,10 +192,10 @@ mysqli_stmt_close($query);
                                     && ($drend == '' || $drend == null || intval($drend) >= $event['duration'])
                                     && ($vrstart == '' || $vrstart == null || intval($vrstart) <= $event['visitCount'])
                                     && ($vrend == '' || $vrend == null || intval($vrend) >= $event['visitCount'])
-                                    && ($rrstart == '' || $rrstart == null || intval($rrstart) <= $event['visitCount'] * $event['price'])
-                                    && ($rrend == '' || $rrend == null || intval($rrend) >= $event['visitCount'] * $event['price'])
+                                    && ($rrstart == '' || $rrstart == null || intval($rrstart) <= $event['revenue'])
+                                    && ($rrend == '' || $rrend == null || intval($rrend) >= $event['revenue'])
                                 ) {
-                                    echo '<tr><td><input type="radio" name="event" value="' . $event['name'] . ',' . $event['startdate'] . ',' . $event['siteName'] . '"></td><td>' . $event['name'] . '</td><td>' . $event['staffCount'] . '</td><td>' . $event['duration'] . '</td><td>' . $event['visitCount'] . '</td><td>' . $event['visitCount'] * $event['price'] . '</td></tr>';
+                                    echo '<tr><td><input type="radio" name="event" value="' . $event['name'] . ',' . $event['startdate'] . ',' . $event['siteName'] . '"></td><td>' . $event['name'] . '</td><td>' . $event['staffCount'] . '</td><td>' . $event['duration'] . '</td><td>' . $event['visitCount'] . '</td><td>' . $event['revenue'] . '</td></tr>';
                                 }
                             }
                             ?>
