@@ -1,5 +1,12 @@
 <?php
 
+$sort = filter_input(INPUT_GET, 'sort');
+if (isset($sort) && $sort != '') {
+    $sort = ' ORDER BY '.$sort;
+} else {
+    $sort = ' ORDER BY TransitRoute ASC';
+}
+
 $type = filter_input(INPUT_GET, 'transportType');
 $route = filter_input(INPUT_GET, 'route');
 $site = filter_input(INPUT_GET, 'site');
@@ -24,7 +31,7 @@ if ($site != 'all') {
                                                     AND TakeTransit.TransitRoute = Transit.TransitRoute) AS LogCount
                                                 FROM Transit, Connect
                                                 WHERE SiteName=? AND Connect.TransitType = Transit.TransitType 
-                                                        AND Connect.TransitRoute = Transit.TransitRoute");
+                                                        AND Connect.TransitRoute = Transit.TransitRoute" . $sort);
     mysqli_stmt_bind_param($query, 's', $site);
     mysqli_stmt_execute($query);
     mysqli_stmt_bind_result($query, $resulttype, $resultroute, $resultprice, $sitename, $resultsitecount, $resultlogcount);
@@ -36,7 +43,7 @@ if ($site != 'all') {
                                             (SELECT COUNT(*) FROM TakeTransit 
                                                 WHERE TakeTransit.TransitType = Transit.TransitType 
                                                 AND TakeTransit.TransitRoute = Transit.TransitRoute) AS LogCount
-                                            FROM Transit");
+                                            FROM Transit" . $sort);
     mysqli_stmt_execute($query);
     mysqli_stmt_bind_result($query, $resulttype, $resultroute, $resultprice, $resultsitecount, $resultlogcount);
 }
@@ -129,6 +136,7 @@ mysqli_close($connection);
                     <div class="col-md-4">
                         <div class="form-group row">
                             <div class="col-sm-12 text-center">
+                                <input type="hidden" name="sort" value="<?= filter_input(INPUT_GET, 'sort') ?>">
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </div>
                         </div>
@@ -143,11 +151,11 @@ mysqli_close($connection);
                             <thead>
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col">Route</th>
-                                <th scope="col">Transport Type</th>
-                                <th scope="col">Price</th>
-                                <th scope="col"># Connected Sites</th>
-                                <th scope="col"># Transit Logged</th>
+                                <th scope="col">Route <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=TransitRoute+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=TransitRoute+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Transport Type <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=TransitType+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=TransitType+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Price <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=TransitPrice+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=TransitPrice+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col"># Connected Sites <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=SiteCount+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=SiteCount+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col"># Transit Logged <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=LogCount+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=LogCount+DESC"><i class="fas fa-chevron-down"></i></a></th>
                             </tr>
                             </thead>
                             <tbody>
