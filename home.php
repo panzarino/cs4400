@@ -29,6 +29,7 @@ $type = $_SESSION['type'];
                 echo '<h1 class="mt-5">User Functionality</h1>';
             }
             ?>
+            <br/>
             <div class="row">
                 <div class="col-md-6 text-center">
                     <a href="taketransit.php" class="btn btn-primary">Take Transit</a>
