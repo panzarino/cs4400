@@ -62,11 +62,11 @@ mysqli_close($connection);
                                 <select name="site" class="form-control" required>
                                     <option value="all" <?= $site == 'all' || $site == null ? 'selected' : '';?>>All</option>
                                     <?php
-                                    foreach ($sites as $s) {
-                                        if ($site == $s['name']) {
-                                            echo '<option value="'.$s['name'].'" selected>'.$s['name'].'</option>';
+                                    foreach ($siteNames as $s) {
+                                        if ($site == $s) {
+                                            echo '<option value="'.$s.'" selected>'.$s.'</option>';
                                         } else {
-                                            echo '<option value="' . $s['name'] . '">' . $s['name'] . '</option>';
+                                            echo '<option value="' . $s . '">' . $s . '</option>';
                                         }
                                     }
                                     ?>
