@@ -199,7 +199,7 @@ mysqli_close($connection);
                         <button type="submit" class="btn btn-primary">Site Detail</button>
                     </div>
                     <div class="col-md-4 text-center">
-                        <button type="submit" class="btn btn-primary">Transit Detail</button>
+                        <button type="submit" class="btn btn-primary" formaction="visitortransitdetail.php" formmethod="GET">Transit Detail</button>
                     </div>
                 </div>
             </form>
