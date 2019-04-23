@@ -39,7 +39,7 @@ mysqli_close($connection);
                             <th>Event Name</th>
                             <th>Staff Names</th>
                             <th>Visits</th>
-                            <th>Revenue</th>
+                            <th>Revenue ($)</th>
                         </tr>
                         </thead>
                         <tbody>
