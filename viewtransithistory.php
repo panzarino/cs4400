@@ -8,6 +8,7 @@ $route = filter_input(INPUT_GET, 'route');
 $site = filter_input(INPUT_GET, 'site');
 $start = filter_input(INPUT_GET, 'start');
 $end = filter_input(INPUT_GET, 'end');
+
 $connection = mysqli_connect(
     $_SERVER['DB_SERVERNAME'],
     $_SERVER['DB_USERNAME'],
@@ -148,7 +149,7 @@ mysqli_close($connection);
                                 && ($route == null || $route == '' || $route == $t['route'])
                                 && ($start == '' || $start == null || strtotime($start) <= strtotime($t['date']))
                                 && ($end == '' || $end == null || strtotime($end) >= strtotime($t['date'])))
-                                echo '<tr><td>'. $t['date'] .'</td><td>' . $t['route'] . '</td><td>' . $t['type'] . '</td><td>' . $t['price'] . '</td><td>' . $t['sites'] . '</td></tr>';
+                                echo '<tr><td>'. $t['date'] .'</td><td>' . $t['route'] . '</td><td>' . $t['type'] . '</td><td>' . $t['price'] . '</td></tr>';
                         }
                         ?>
                         </tbody>
