@@ -1,8 +1,10 @@
 <?php
 
 $sort = filter_input(INPUT_GET, 'sort');
-if (isset($sort)) {
+if (isset($sort) && $sort != '') {
     $sort = ' ORDER BY '.$sort;
+} else {
+    $sort = ' ORDER BY Username ASC';
 }
 
 $username = filter_input(INPUT_GET, 'username');
@@ -77,6 +79,7 @@ mysqli_close($connection);
                     <div class="col-md-6">
                         <div class="form-group row">
                             <div class="col-sm-12 text-center">
+                                <input type="hidden" name="sort" value="<?= filter_input(INPUT_GET, 'sort') ?>">
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </div>
                         </div>
