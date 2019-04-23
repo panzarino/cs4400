@@ -1,5 +1,12 @@
 <?php
 
+$sort = filter_input(INPUT_GET, 'sort');
+if (isset($sort) && $sort != '') {
+    $sort = ' ORDER BY '.$sort;
+} else {
+    $sort = ' ORDER BY Name ASC';
+}
+
 $site = filter_input(INPUT_GET, 'site');
 $first = filter_input(INPUT_GET, 'firstName');
 $firstq = "%" . $first . "%";
@@ -23,6 +30,9 @@ $qstr = "SELECT CONCAT(Firstname, \" \", Lastname) as Name, COUNT(AssignTo.Event
         WHERE Firstname LIKE ? AND Lastname LIKE ? AND AssignTo.StartDate <= ? AND EndDate >= ? ";
 if (isset($site) && $site != 'all') $qstr .= "AND AssignTo.SiteName=? ";
 $qstr .= "GROUP BY Username";
+
+$qstr .= $sort;
+
 $query = mysqli_prepare($connection, $qstr);
 
 if (isset($site) && $site != 'all') {
@@ -124,6 +134,7 @@ mysqli_close($connection);
                     <div class="col-md-4">
                         <div class="form-group row">
                             <div class="col-sm-12 text-center">
+                                <input type="hidden" name="sort" value="<?= filter_input(INPUT_GET, 'sort') ?>">
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </div>
                         </div>
@@ -136,8 +147,8 @@ mysqli_close($connection);
                     <table class="table align-self-center text-center">
                         <thead>
                         <tr>
-                            <th scope="col">Staff Name</th>
-                            <th align="center" scope="col"># Event Shifts</th>
+                            <th scope="col">Staff Name <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Name+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Name+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                            <th align="center" scope="col"># Event Shifts <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Shifts+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Shifts+DESC"><i class="fas fa-chevron-down"></i></a></th>
                         </tr>
                         </thead>
                         <tbody>
