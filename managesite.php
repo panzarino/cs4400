@@ -1,5 +1,12 @@
 <?php
 
+$sort = filter_input(INPUT_GET, 'sort');
+if (isset($sort) && $sort != '') {
+    $sort = ' ORDER BY '.$sort;
+} else {
+    $sort = ' ORDER BY SiteName ASC';
+}
+
 $site = filter_input(INPUT_GET, 'site');
 $manager = filter_input(INPUT_GET, 'manager');
 $open = filter_input(INPUT_GET, 'open');
@@ -12,7 +19,7 @@ $connection = mysqli_connect(
 );
 
 $sites = [];
-$query = mysqli_prepare($connection, "SELECT SiteName, OpenEveryday, Username, Firstname, Lastname FROM Site JOIN User ON Site.ManagerUsername=User.Username");
+$query = mysqli_prepare($connection, "SELECT SiteName, OpenEveryday, Username, Firstname, Lastname FROM Site JOIN User ON Site.ManagerUsername=User.Username".$sort);
 mysqli_stmt_execute($query);
 mysqli_stmt_bind_result($query, $resultname, $resultopen, $resultusername, $resultfirstname, $resultlastname);
 while (mysqli_stmt_fetch($query)) {
@@ -96,6 +103,7 @@ mysqli_close($connection);
                     <div class="col-md-6">
                         <div class="form-group row">
                             <div class="col-sm-12 text-center">
+                                <input type="hidden" name="sort" value="<?= filter_input(INPUT_GET, 'sort') ?>">
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </div>
                         </div>
@@ -109,9 +117,9 @@ mysqli_close($connection);
                             <thead>
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Manager</th>
-                                <th scope="col">Open Everyday</th>
+                                <th scope="col">Name <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=SiteName+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=SiteName+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Manager <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Firstname+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Firstname+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Open Everyday <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=OpenEveryday+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=OpenEveryday+DESC"><i class="fas fa-chevron-down"></i></a></th>
                             </tr>
                             </thead>
                             <tbody>
