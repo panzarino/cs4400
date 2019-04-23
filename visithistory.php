@@ -1,5 +1,12 @@
 <?php
 
+$sort = filter_input(INPUT_GET, 'sort');
+if (isset($sort) && $sort != '') {
+    $sort = ' ORDER BY '.$sort;
+} else {
+    $sort = ' ORDER BY VisitDate ASC';
+}
+
 $site = filter_input(INPUT_GET, 'site');
 $event = filter_input(INPUT_GET, 'event');
 $startdate = filter_input(INPUT_GET, 'startdate');
@@ -27,7 +34,7 @@ while (mysqli_stmt_fetch($sitenamessquery)) {
 mysqli_stmt_close($sitenamessquery);
 
 $visits = [];
-$visitsquery = mysqli_prepare($connection, "SELECT VisitEventDate, Event.EventName, Event.SiteName, Event.EventPrice FROM VisitEvent JOIN Event ON VisitEvent.EventName=Event.EventName AND VisitEvent.StartDate=Event.StartDate AND VisitEvent.SiteName=Event.SiteName WHERE VisitorUsername=? UNION SELECT VisitSiteDate as VisitDate, \"\", SiteName, 0 FROM VisitSite WHERE VisitorUsername=?");
+$visitsquery = mysqli_prepare($connection, "SELECT VisitEventDate as VisitDate, Event.EventName, Event.SiteName, Event.EventPrice FROM VisitEvent JOIN Event ON VisitEvent.EventName=Event.EventName AND VisitEvent.StartDate=Event.StartDate AND VisitEvent.SiteName=Event.SiteName WHERE VisitorUsername=? UNION SELECT VisitSiteDate as VisitDate, \"\", SiteName, 0 FROM VisitSite WHERE VisitorUsername=?".$sort);
 mysqli_stmt_bind_param($visitsquery, 'ss', $username, $username);
 mysqli_stmt_execute($visitsquery);
 mysqli_stmt_bind_result($visitsquery, $resultdate, $resultevent, $resultsite, $resultprice);
@@ -98,6 +105,7 @@ mysqli_close($connection);
                     <div class="col-md-12">
                         <div class="form-group row">
                             <div class="col-sm-12 text-center">
+                                <input type="hidden" name="sort" value="<?= filter_input(INPUT_GET, 'sort') ?>">
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </div>
                         </div>
@@ -109,10 +117,10 @@ mysqli_close($connection);
                     <table class="table">
                         <thead>
                         <tr>
-                            <th scope="col">Date</th>
-                            <th scope="col">Event</th>
-                            <th scope="col">Site</th>
-                            <th scope="col">Price ($)</th>
+                            <th scope="col">Date <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=VisitDate+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=VisitDate+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                            <th scope="col">Event <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=EventName+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=EventName+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                            <th scope="col">Site <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=SiteName+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=SiteName+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                            <th scope="col">Price ($) <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=EventPrice+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=EventPrice+DESC"><i class="fas fa-chevron-down"></i></a></th>
                         </tr>
                         </thead>
                         <tbody>
