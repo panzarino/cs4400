@@ -196,7 +196,7 @@ mysqli_close($connection);
                         <a href="home.php" class="btn btn-primary">Back</a>
                     </div>
                     <div class="col-md-4 text-center">
-                        <button type="submit" class="btn btn-primary">Site Detail</button>
+                        <button type="submit" class="btn btn-primary" formaction="visitorsitedetail.php" formmethod="GET">Site Detail</button>
                     </div>
                     <div class="col-md-4 text-center">
                         <button type="submit" class="btn btn-primary" formaction="visitortransitdetail.php" formmethod="GET">Transit Detail</button>
