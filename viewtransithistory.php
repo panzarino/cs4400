@@ -146,8 +146,8 @@ mysqli_close($connection);
                         foreach ($transits as $t) {
                             if (($type == 'all' || $type == null || $type == $t['type'])
                                 && ($route == null || $route == '' || $route == $t['route'])
-                                && ($start == '' || $start == null || $start <= $t['date'])
-                                && ($end == '' || $end == null || $end >= $t['date']))
+                                && ($start == '' || $start == null || strtotime($start) <= strtotime($t['date']))
+                                && ($end == '' || $end == null || strtotime($end) >= strtotime($t['date'])))
                                 echo '<tr><td>'. $t['date'] .'</td><td>' . $t['route'] . '</td><td>' . $t['type'] . '</td><td>' . $t['price'] . '</td><td>' . $t['sites'] . '</td></tr>';
                         }
                         ?>
