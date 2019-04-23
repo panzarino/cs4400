@@ -1,5 +1,10 @@
 <?php
 
+$sort = filter_input(INPUT_GET, 'sort');
+if (isset($sort)) {
+    $sort = ' ORDER BY '.$sort;
+}
+
 $username = filter_input(INPUT_GET, 'username');
 $type = filter_input(INPUT_GET, 'type');
 $status = filter_input(INPUT_GET, 'status');
@@ -11,8 +16,9 @@ $connection = mysqli_connect(
     $_SERVER['DB_DATABASE']
 );
 
+
 $users = [];
-$query = mysqli_prepare($connection, "SELECT 'visitor' AS Type, User.Username, Status, (SELECT COUNT(*) FROM UserEmail WHERE UserEmail.Username = User.Username) AS EmailCount FROM User JOIN Visitor ON User.Username=Visitor.Username WHERE User.Username NOT IN (SELECT Username FROM Employee) UNION SELECT 'staff' AS Type, User.Username, Status, (SELECT COUNT(*) FROM UserEmail WHERE UserEmail.Username = User.Username) AS EmailCount FROM User JOIN Staff ON User.Username=Staff.Username UNION SELECT 'manager' AS Type, User.Username, Status, (SELECT COUNT(*) FROM UserEmail WHERE UserEmail.Username = User.Username) AS EmailCount FROM User JOIN Manager ON User.Username=Manager.Username UNION SELECT 'user' AS Type, User.Username, Status, (SELECT COUNT(*) FROM UserEmail WHERE UserEmail.Username = User.Username) AS EmailCount FROM User WHERE Username NOT IN (SELECT Username FROM Employee UNION SELECT Username FROM Visitor)");
+$query = mysqli_prepare($connection, "SELECT 'visitor' AS Type, User.Username as Username, Status, (SELECT COUNT(*) FROM UserEmail WHERE UserEmail.Username = User.Username) AS EmailCount FROM User JOIN Visitor ON User.Username=Visitor.Username WHERE User.Username NOT IN (SELECT Username FROM Employee) UNION SELECT 'staff' AS Type, User.Username as Username, Status, (SELECT COUNT(*) FROM UserEmail WHERE UserEmail.Username = User.Username) AS EmailCount FROM User JOIN Staff ON User.Username=Staff.Username UNION SELECT 'manager' AS Type, User.Username as Username, Status, (SELECT COUNT(*) FROM UserEmail WHERE UserEmail.Username = User.Username) AS EmailCount FROM User JOIN Manager ON User.Username=Manager.Username UNION SELECT 'user' AS Type, User.Username as Username, Status, (SELECT COUNT(*) FROM UserEmail WHERE UserEmail.Username = User.Username) AS EmailCount FROM User WHERE Username NOT IN (SELECT Username FROM Employee UNION SELECT Username FROM Visitor)".$sort);
 mysqli_stmt_execute($query);
 mysqli_stmt_bind_result($query, $resulttype, $resultusername, $resultstatus, $resultemailcount);
 while (mysqli_stmt_fetch($query)) {
@@ -84,10 +90,10 @@ mysqli_close($connection);
                             <thead>
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col">Username</th>
-                                <th scope="col">Email Count</th>
-                                <th scope="col">User Type</th>
-                                <th scope="col">Status</th>
+                                <th scope="col">Username <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Username+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Username+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Email Count <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=EmailCount+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=EmailCount+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">User Type <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Type+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Type+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Status <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Status+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Status+DESC"><i class="fas fa-chevron-down"></i></a></th>
                             </tr>
                             </thead>
                             <tbody>
