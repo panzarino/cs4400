@@ -125,14 +125,15 @@ mysqli_close($connection);
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6"></div>
-                    <div class="col-md-6">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
                         <div class="form-group row">
                             <div class="col-sm-12 text-center">
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4"></div>
                 </div>
             </form>
             <form onsubmit="return verify()">
