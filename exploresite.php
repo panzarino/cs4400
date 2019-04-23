@@ -1,5 +1,12 @@
 <?php
 
+$sort = filter_input(INPUT_GET, 'sort');
+if (isset($sort) && $sort != '') {
+    $sort = ' ORDER BY '.$sort;
+} else {
+    $sort = ' ORDER BY SiteName ASC';
+}
+
 $startdate = filter_input(INPUT_GET, 'startdate');
 if (strlen($startdate) == 0) $startdate = 0;
 $enddate = filter_input(INPUT_GET, 'enddate');
@@ -34,7 +41,7 @@ while (mysqli_stmt_fetch($sitenamessquery)) {
 mysqli_stmt_close($sitenamessquery);
 
 $sites = [];
-$sitesquery = mysqli_prepare($connection, "SELECT SiteName, OpenEveryday, (SELECT COUNT(*) FROM Event WHERE Event.SiteName=Site.SiteName AND EndDate >= ? AND StartDate <= ?), (SELECT COUNT(*) FROM VisitEvent WHERE VisitEvent.SiteName=Site.SiteName AND VisitEventDate >= ? AND VisitEventDate <= ?) + (SELECT COUNT(*) FROM VisitSite WHERE VisitSite.SiteName=Site.SiteName AND VisitSiteDate >= ? AND VisitSiteDate <= ?), (SELECT COUNT(*) FROM VisitEvent WHERE VisitEvent.SiteName=Site.SiteName AND VisitEventDate >= ? AND VisitEventDate <= ? AND VisitorUsername=?) + (SELECT COUNT(*) FROM VisitSite WHERE VisitSite.SiteName=Site.SiteName AND VisitSiteDate >= ? AND VisitSiteDate <= ? AND VisitorUsername=?) FROM Site");
+$sitesquery = mysqli_prepare($connection, "SELECT SiteName, OpenEveryday, (SELECT COUNT(*) FROM Event WHERE Event.SiteName=Site.SiteName AND EndDate >= ? AND StartDate <= ?) AS EventCount, ((SELECT COUNT(*) FROM VisitEvent WHERE VisitEvent.SiteName=Site.SiteName AND VisitEventDate >= ? AND VisitEventDate <= ?) + (SELECT COUNT(*) FROM VisitSite WHERE VisitSite.SiteName=Site.SiteName AND VisitSiteDate >= ? AND VisitSiteDate <= ?)) AS Visits, ((SELECT COUNT(*) FROM VisitEvent WHERE VisitEvent.SiteName=Site.SiteName AND VisitEventDate >= ? AND VisitEventDate <= ? AND VisitorUsername=?) + (SELECT COUNT(*) FROM VisitSite WHERE VisitSite.SiteName=Site.SiteName AND VisitSiteDate >= ? AND VisitSiteDate <= ? AND VisitorUsername=?)) AS MyVisits FROM Site".$sort);
 mysqli_stmt_bind_param($sitesquery, 'ssssssssssss', $startdate, $enddate, $startdate, $enddate, $startdate, $enddate, $startdate, $enddate, $username, $startdate, $enddate, $username);
 mysqli_stmt_execute($sitesquery);
 mysqli_stmt_bind_result($sitesquery, $resultname, $resultopen, $resulteventcount, $resultvisits, $resultmyvisits);
@@ -166,10 +173,10 @@ mysqli_close($connection);
                             <thead>
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col">Site Name</th>
-                                <th scope="col">Event Count</th>
-                                <th scope="col">Total Visits</th>
-                                <th scope="col">My Visits</th>
+                                <th scope="col">Site Name <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=SiteName+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=SiteName+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Event Count <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=EventCount+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=EventCount+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">Total Visits <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Visits+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=Visits+DESC"><i class="fas fa-chevron-down"></i></a></th>
+                                <th scope="col">My Visits <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=MyVisits+ASC"><i class="fas fa-chevron-up"></i></a> <a href="<?php echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"?>&sort=MyVisits+DESC"><i class="fas fa-chevron-down"></i></a></th>
                             </tr>
                             </thead>
                             <tbody>
