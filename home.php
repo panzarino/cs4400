@@ -66,7 +66,7 @@ $type = $_SESSION['type'];
                     echo '<div class="col-md-6 text-center"><a href="" class="btn btn-primary">View Schedule</a><br /><br /></div>';
                 }
                 if ($type == 'administrator-visitor' || $type == 'manager-visitor' || $type == 'staff-visitor' || $type == 'visitor') {
-                    echo '<div class="col-md-6 text-center"><a href="" class="btn btn-primary">Explore Event</a><br /><br /></div>';
+                    echo '<div class="col-md-6 text-center"><a href="exploreevent.php" class="btn btn-primary">Explore Event</a><br /><br /></div>';
                 }
                 if ($type == 'administrator-visitor' || $type == 'manager-visitor' || $type == 'staff-visitor' || $type == 'visitor') {
                     echo '<div class="col-md-6 text-center"><a href="" class="btn btn-primary">Explore Site</a><br /><br /></div>';
