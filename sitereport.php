@@ -38,12 +38,12 @@ if (!isset($site)) {
 $reports = [];
 
 if (isset($startdate) && isset($enddate)) {
-    $reportquery = mysqli_prepare($connection, "SELECT Date, SUM(VisitorCount), SUM(EventCount), SUM(StaffCount), SUM(Revenue) FROM (SELECT V.Date AS Date, COUNT(V.VisitorUsername) AS VisitorCount, COUNT(DISTINCT V.EventName) AS EventCount, COUNT(V.StaffUsername) AS StaffCount, SUM(V.EventPrice) AS Revenue FROM (SELECT VisitEventDate AS Date, VisitorUsername, Event.EventName AS EventName, AssignTo.StaffUsername AS StaffUsername, Event.EventPrice AS EventPrice FROM VisitEvent JOIN Event ON Event.EventName=VisitEvent.EventName AND Event.StartDate=VisitEvent.StartDate AND Event.SiteName=VisitEvent.SiteName JOIN AssignTo ON AssignTo.EventName=VisitEvent.EventName AND AssignTo.StartDate=VisitEvent.StartDate AND AssignTo.SiteName=VisitEvent.SiteName WHERE VisitEvent.SiteName=?) as V GROUP BY V.Date UNION SELECT VisitSiteDate AS Date, COUNT(VisitorUsername) AS VisitorCount, 0 AS EventCount, 0 AS StaffCount, 0 AS Revenue FROM VisitSite WHERE SiteName=? GROUP BY Date) AS RESULT GROUP BY RESULT.Date");
+    $reportquery = mysqli_prepare($connection, "SELECT Date, SUM(VisitorCount), SUM(EventCount), SUM(StaffCount), SUM(Revenue) FROM (SELECT V.Date AS Date, COUNT(V.VisitorUsername) AS VisitorCount, COUNT(DISTINCT V.EventName) AS EventCount, COUNT(DISTINCT V.StaffUsername) AS StaffCount, SUM(V.EventPrice) AS Revenue FROM (SELECT VisitEventDate AS Date, VisitorUsername, Event.EventName AS EventName, AssignTo.StaffUsername AS StaffUsername, Event.EventPrice AS EventPrice FROM VisitEvent JOIN Event ON Event.EventName=VisitEvent.EventName AND Event.StartDate=VisitEvent.StartDate AND Event.SiteName=VisitEvent.SiteName JOIN AssignTo ON AssignTo.EventName=VisitEvent.EventName AND AssignTo.StartDate=VisitEvent.StartDate AND AssignTo.SiteName=VisitEvent.SiteName WHERE VisitEvent.SiteName=?) as V GROUP BY V.Date UNION SELECT VisitSiteDate AS Date, COUNT(VisitorUsername) AS VisitorCount, 0 AS EventCount, 0 AS StaffCount, 0 AS Revenue FROM VisitSite WHERE SiteName=? GROUP BY Date) AS RESULT GROUP BY RESULT.Date");
     mysqli_stmt_bind_param($reportquery, 'ss', $site, $site);
     mysqli_stmt_execute($reportquery);
     mysqli_stmt_bind_result($reportquery, $resultdate, $resultvisitcount, $resulteventcount, $resultstaffcount, $resultrevenue);
     while (mysqli_stmt_fetch($reportquery)) {
-        array_push($reports, array('date' => $resultdate, 'visitCount' => $resultvisitcount, 'eventCount' => $resulteventcount, 'staffCount' => $resulteventcount, 'revenue' => $resultrevenue));
+        array_push($reports, array('date' => $resultdate, 'visitCount' => $resultvisitcount, 'eventCount' => $resulteventcount, 'staffCount' => $resultstaffcount, 'revenue' => $resultrevenue));
     }
     mysqli_stmt_close($reportquery);
 }
