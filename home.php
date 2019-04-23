@@ -60,7 +60,7 @@ $type = $_SESSION['type'];
                     echo '<div class="col-md-6 text-center"><a href="" class="btn btn-primary">View Staff</a><br /><br /></div>';
                 }
                 if ($type == 'manager' || $type == 'manager-visitor') {
-                    echo '<div class="col-md-6 text-center"><a href="" class="btn btn-primary">View Site Report</a><br /><br /></div>';
+                    echo '<div class="col-md-6 text-center"><a href="sitereport.php" class="btn btn-primary">View Site Report</a><br /><br /></div>';
                 }
                 if ($type == 'staff' || $type == 'staff-visitor') {
                     echo '<div class="col-md-6 text-center"><a href="" class="btn btn-primary">View Schedule</a><br /><br /></div>';
@@ -84,6 +84,9 @@ $type = $_SESSION['type'];
                 if (isset($_GET['error'])) {
                     if ($_GET['error'] == 'manageevent') {
                         echo '<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Cannot access Manage Event because you do not have a site assigned.</div>';
+                    }
+                    if ($_GET['error'] == 'sitereport') {
+                        echo '<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Cannot access Site Report because you do not have a site assigned.</div>';
                     }
                 }
                 ?>
