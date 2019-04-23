@@ -204,7 +204,7 @@ mysqli_close($connection);
                                     && ($visited || (!$visited && $event['myVisits'] == 0))
                                     && ($soldout || (!$soldout && $event['ticketsRemaining'] != 0))
                                 ) {
-                                    echo '<tr><td><input type="radio" name="site" value="' . $event['name'] . ',' . $event['startdate'] . ',' . $event['siteName'] . '"></td><td>' . $event['name'] . '</td><td>' . $event['siteName'] . '</td><td>' . $event['price'] . '</td><td>' . $event['ticketsRemaining'] . '</td><td>' . $event['visits'] . '</td><td>' . $event['myVisits'] . '</td></tr>';
+                                    echo '<tr><td><input type="radio" name="event" value="' . $event['name'] . ',' . $event['startdate'] . ',' . $event['siteName'] . '"></td><td>' . $event['name'] . '</td><td>' . $event['siteName'] . '</td><td>' . $event['price'] . '</td><td>' . $event['ticketsRemaining'] . '</td><td>' . $event['visits'] . '</td><td>' . $event['myVisits'] . '</td></tr>';
                                 }
                             }
                             ?>
@@ -227,7 +227,7 @@ mysqli_close($connection);
 
 <script>
     function verify() {
-        if (typeof $('input[name=site]:checked').val() === 'undefined') {
+        if (typeof $('input[name=event]:checked').val() === 'undefined') {
             return false;
         }
         return true;
