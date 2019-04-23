@@ -26,8 +26,8 @@ mysqli_stmt_close($eventquery);
 
 
 $staff = [];
-$staffquery = mysqli_prepare($connection, "SELECT 1 AS Selected, Username, Firstname, Lastname FROM AssignTo JOIN User on User.Username=AssignTo.StaffUsername WHERE EventName=? AND StartDate=? AND SiteName=? UNION SELECT 0 AS Selected, User.Username, Firstname, Lastname FROM Staff JOIN User on User.Username=Staff.Username WHERE User.Username NOT IN (SELECT Username FROM AssignTo JOIN User on User.Username=AssignTo.StaffUsername WHERE EventName=? AND StartDate=? AND SiteName=?)");
-mysqli_stmt_bind_param($staffquery, 'ssssss', $name, $startdate, $site, $name, $startdate, $site);
+$staffquery = mysqli_prepare($connection, "SELECT 1 AS Selected, Username, Firstname, Lastname FROM AssignTo JOIN User on User.Username=AssignTo.StaffUsername WHERE EventName=? AND StartDate=? AND SiteName=? UNION SELECT 0 AS Selected, User.Username, Firstname, Lastname FROM Staff JOIN User on User.Username=Staff.Username WHERE User.Username NOT IN (SELECT Username FROM AssignTo JOIN User on User.Username=AssignTo.StaffUsername WHERE EventName=? AND StartDate=? AND SiteName=? UNION SELECT Username FROM Staff JOIN AssignTo ON Staff.Username=AssignTo.StaffUsername JOIN Event ON AssignTo.EventName=Event.EventName AND AssignTo.StartDate=Event.StartDate AND AssignTo.SiteName=Event.SiteName WHERE Event.StartDate <= ? AND Event.EndDate >= ?)");
+mysqli_stmt_bind_param($staffquery, 'ssssssss', $name, $startdate, $site, $name, $startdate, $site, $startdate, $resultenddate);
 mysqli_stmt_execute($staffquery);
 mysqli_stmt_bind_result($staffquery, $resultselected, $resultusername, $resultfirstname, $resultlastname);
 while (mysqli_stmt_fetch($staffquery)) {
@@ -136,9 +136,7 @@ mysqli_close($connection);
                         </div>
                     </div>
                 </div>
-                <input type="hidden" name="name" value="<?= $name ?>">
-                <input type="hidden" name="startdate" value="<?= $startdate ?>">
-                <input type="hidden" name="site" value="<?= $site ?>">
+                <input type="hidden" name="event" value="<?= filter_input(INPUT_GET, 'event') ?>">
                 <input type="hidden" id="staffstr" name="staff">
                 <div class="form-group row">
                     <div class="col-sm-6 offset-sm-6 text-center">
@@ -146,6 +144,7 @@ mysqli_close($connection);
                     </div>
                 </div>
             </form>
+            <div id="errorMessage"></div>
             <br />
             <br />
             <form>
@@ -234,17 +233,6 @@ mysqli_close($connection);
                     <a href="manageevent.php" class="btn btn-primary">Back</a>
                 </div>
             </div>
-            <div id="errorMessage"></div>
-            <?php
-            if (isset($_GET['error'])) {
-                if ($_GET['error'] == 'conflict') {
-                    echo '<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Could not create event. That event conflicts with another event at the same site.</div>';
-                }
-                if ($_GET['error'] == 'staffconflict') {
-                    echo '<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Could not create event. Some selected staff members have other events at that time.</div>';
-                }
-            }
-            ?>
         </div>
     </div>
 </div>
@@ -263,17 +251,9 @@ mysqli_close($connection);
     }
 
     function verify() {
-        var startDate = document.getElementById('startdate').valueAsDate;
-        var endDate = document.getElementById('enddate').valueAsDate;
-
-        if (endDate < startDate) {
-            $('#errorMessage').html('<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Start date must be before end date.</div>');
-            return false;
-        }
-
         handleStaff();
 
-        if (staff.length < parseInt($('#minstaffreq').val())) {
+        if (staff.length < <?= $resultminstaffreq ?>) {
             $('#errorMessage').html('<div class="alert alert-danger text-center" role="alert" style="margin-top: 30px">Must have at least minimum staff required selected.</div>');
             return false;
         }
